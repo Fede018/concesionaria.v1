@@ -1,0 +1,46 @@
+let concesionaria = {
+   autos: require('./autos'),
+
+   buscarAuto: function(patente){ 
+      return this.autos.find(elemento =>
+      elemento.patente == patente) || null;
+   },
+
+   venderAuto:function(patente) {
+      if(this.buscarAuto(patente) != null) {
+         return this.buscarAuto(patente).vendido = true;
+      }
+   },
+
+   autosParaLaVenta: function(){
+      return this.autos.filter(elemento =>
+      elemento.vendido == false);
+   },
+   
+   autosNuevos: function(){
+      return this.autosParaLaVenta().filter(elemento =>
+      elemento.km < 100);
+      
+   },
+
+   listaDeVentas: function(){
+   return this.autos.filter(elemento =>
+   elemento.vendido == true).map(elemento => elemento.precio)
+   },
+   
+   totalDeVentas: function(){
+      return this.listaDeVentas().reduce((acum, elemento) =>
+      acum + elemento, 0);
+   },
+   
+   puedeComprar: function(auto,persona) {
+      return persona.capacidadDePagoTotal >= auto.precio 
+      && 
+      persona.capacidadDePagoEnCuotas >=    (auto.precio/auto.cuotas);
+   },
+
+   autosQuePuedeComprar: function(persona){
+      return this.autosParaLaVenta().filter(elemento =>
+      this.puedeComprar(elemento,persona));
+   }
+}
